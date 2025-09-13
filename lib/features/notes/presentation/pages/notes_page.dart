@@ -39,11 +39,16 @@ class _NotesPageState extends State<NotesPage> {
     }
   }
 
+  String _formatDate(DateTime date) {
+    return "${date.day}/${date.month}/${date.year}";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Notas"),
+        backgroundColor: Colors.green.shade700,
       ),
       body: notes.isEmpty
           ? const Center(child: Text("Nenhuma nota ainda"))
@@ -51,23 +56,45 @@ class _NotesPageState extends State<NotesPage> {
               itemCount: notes.length,
               itemBuilder: (context, index) {
                 final note = notes[index];
-                return ListTile(
-                  title: Text(note.title),
-                  subtitle: Text(
-                    note.content,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  trailing: Text(
-                    "${note.createdAt.day}/${note.createdAt.month}/${note.createdAt.year}",
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                  onTap: () => _navigateToEdit(note: note), // abrir edição
+                return Column(
+                  children: [
+                    ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.green.shade300,
+                        child: Text(
+                          note.title.isNotEmpty
+                              ? note.title[0].toUpperCase()
+                              : "?",
+                          style: const TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      title: Text(
+                        note.title.isNotEmpty ? note.title : "Sem título",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      subtitle: Text(
+                        note.content.isNotEmpty
+                            ? note.content
+                            : "Sem conteúdo",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing: Text(
+                        _formatDate(note.createdAt),
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      onTap: () => _navigateToEdit(note: note),
+                    ),
+                    const Divider(height: 1),
+                  ],
                 );
               },
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _navigateToEdit(), // abrir nova nota (igual WhatsApp)
+        backgroundColor: Colors.green.shade700,
+        onPressed: () => _navigateToEdit(),
         child: const Icon(Icons.add),
       ),
     );
