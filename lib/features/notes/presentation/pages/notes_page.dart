@@ -13,6 +13,9 @@ class NotesPage extends StatefulWidget {
 class _NotesPageState extends State<NotesPage> {
   final NoteRepository repository = NoteRepository();
   List<NoteModel> notes = [];
+  List<NoteModel> filteredNotes = [];
+  bool isSearching = false;
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -24,6 +27,7 @@ class _NotesPageState extends State<NotesPage> {
     final result = await repository.getNotes();
     setState(() {
       notes = result;
+      filteredNotes = result;
     });
   }
 
@@ -37,6 +41,30 @@ class _NotesPageState extends State<NotesPage> {
     if (saved == true) {
       _loadNotes();
     }
+  }
+
+  void _startSearch() {
+    setState(() {
+      isSearching = true;
+    });
+  }
+
+  void _stopSearch() {
+    setState(() {
+      isSearching = false;
+      searchController.clear();
+      filteredNotes = notes;
+    });
+  }
+
+  void _filterNotes(String query) {
+    final lowerQuery = query.toLowerCase();
+    setState(() {
+      filteredNotes = notes.where((note) {
+        return note.title.toLowerCase().contains(lowerQuery) ||
+               note.content.toLowerCase().contains(lowerQuery);
+      }).toList();
+    });
   }
 
   String _formatDate(DateTime date) {
@@ -60,22 +88,43 @@ class _NotesPageState extends State<NotesPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Colors.blue.shade600; // azul principal
-    final accentColor = Colors.blue.shade400;  // azul mais leve (para ícones/avatares)
+    final primaryColor = Colors.blue.shade600;
+    final accentColor = Colors.blue.shade400;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Notas",
-          style: TextStyle(color: Colors.white),
-        ),
         backgroundColor: primaryColor,
-        iconTheme: const IconThemeData(color: Colors.white),
+        title: !isSearching
+            ? const Text(
+                "Notas",
+                style: TextStyle(color: Colors.white),
+              )
+            : TextField(
+                controller: searchController,
+                autofocus: true,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  hintText: "Buscar notas...",
+                  hintStyle: TextStyle(color: Colors.white70),
+                  border: InputBorder.none,
+                ),
+                onChanged: _filterNotes,
+              ),
+        actions: [
+          !isSearching
+              ? IconButton(
+                  icon: const Icon(Icons.search, color: Colors.white),
+                  onPressed: _startSearch,
+                )
+              : IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  onPressed: _stopSearch,
+                )
+        ],
       ),
-      body: notes.isEmpty
+      body: filteredNotes.isEmpty
           ? const Center(
               child: Text(
                 "Nenhuma nota ainda",
@@ -83,9 +132,9 @@ class _NotesPageState extends State<NotesPage> {
               ),
             )
           : ListView.builder(
-              itemCount: notes.length,
+              itemCount: filteredNotes.length,
               itemBuilder: (context, index) {
-                final note = notes[index];
+                final note = filteredNotes[index];
                 return Column(
                   children: [
                     ListTile(
@@ -96,17 +145,13 @@ class _NotesPageState extends State<NotesPage> {
                               ? note.title[0].toUpperCase()
                               : "?",
                           style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                              color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ),
                       title: Text(
                         note.title.isNotEmpty ? note.title : "Sem título",
                         style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                            fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       subtitle: Text(
                         note.content.isNotEmpty
