@@ -40,8 +40,26 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   String _formatDate(DateTime date) {
-    return "${date.day}/${date.month}/${date.year}";
+    final now = DateTime.now();
+    final difference = now.difference(date).inDays;
+
+    if (difference == 0 &&
+        date.day == now.day &&
+        date.month == now.month &&
+        date.year == now.year) {
+      return "Hoje";
+    } else if (difference == 1 ||
+        (now.day - date.day == 1 &&
+            now.month == date.month &&
+            now.year == date.year)) {
+      return "Ontem";
+    } else {
+      return "${date.day.toString().padLeft(2, '0')}/"
+             "${date.month.toString().padLeft(2, '0')}/"
+             "${date.year}";
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
