@@ -25,7 +25,6 @@ class _NoteEditPageState extends State<NoteEditPage> {
   }
 
   Future<void> _saveNote() async {
-    // Não salva se os dois campos estiverem vazios
     if (_titleController.text.isEmpty && _contentController.text.isEmpty) {
       Navigator.pop(context);
       return;
@@ -41,11 +40,12 @@ class _NoteEditPageState extends State<NoteEditPage> {
     if (widget.note == null) {
       await repository.insertNote(note);
     } else {
-      // Atualização virá no próximo passo
+      await repository.updateNote(note);
     }
 
-    Navigator.pop(context, true); // retorna "true" pra indicar que salvou
-  }
+    Navigator.pop(context, true);
+  } 
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +53,14 @@ class _NoteEditPageState extends State<NoteEditPage> {
       appBar: AppBar(
         title: Text(widget.note == null ? "Nova Nota" : "Editar Nota"),
         actions: [
+          if (widget.note != null)
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () async {
+                await repository.deleteNote(widget.note!.id!);
+                Navigator.pop(context, true);
+              },
+            ),
           IconButton(
             icon: const Icon(Icons.check),
             onPressed: _saveNote,
