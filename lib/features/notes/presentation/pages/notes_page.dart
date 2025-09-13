@@ -45,13 +45,25 @@ class _NotesPageState extends State<NotesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Colors.blue.shade600; // azul principal
+    final accentColor = Colors.blue.shade400;  // azul mais leve (para ícones/avatares)
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Notas"),
-        backgroundColor: Colors.green.shade700,
+        title: const Text(
+          "Notas",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: primaryColor,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: notes.isEmpty
-          ? const Center(child: Text("Nenhuma nota ainda"))
+          ? const Center(
+              child: Text(
+                "Nenhuma nota ainda",
+                style: TextStyle(fontSize: 16, color: Colors.black54),
+              ),
+            )
           : ListView.builder(
               itemCount: notes.length,
               itemBuilder: (context, index) {
@@ -60,19 +72,23 @@ class _NotesPageState extends State<NotesPage> {
                   children: [
                     ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: Colors.green.shade300,
+                        backgroundColor: accentColor,
                         child: Text(
                           note.title.isNotEmpty
                               ? note.title[0].toUpperCase()
                               : "?",
                           style: const TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       title: Text(
                         note.title.isNotEmpty ? note.title : "Sem título",
                         style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                       subtitle: Text(
                         note.content.isNotEmpty
@@ -83,7 +99,7 @@ class _NotesPageState extends State<NotesPage> {
                       ),
                       trailing: Text(
                         _formatDate(note.createdAt),
-                        style: const TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 12, color: Colors.black54),
                       ),
                       onTap: () => _navigateToEdit(note: note),
                     ),
@@ -93,9 +109,9 @@ class _NotesPageState extends State<NotesPage> {
               },
             ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.green.shade700,
+        backgroundColor: primaryColor,
         onPressed: () => _navigateToEdit(),
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
