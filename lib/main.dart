@@ -14,9 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Notas App',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
+      theme: ThemeData(primarySwatch: Colors.green),
       home: const NotesPage(), // 👈 garante que inicia na lista de notas
     );
   }

@@ -27,10 +27,6 @@ class NoteRepository {
 
   Future<int> deleteNote(int id) async {
     final db = await _database.database;
-    return await db.delete(
-      'notes',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete('notes', where: 'id = ?', whereArgs: [id]);
   }
 }

@@ -26,7 +26,7 @@ class NoteModel {
       throw ArgumentError('Campo title é obrigatório');
     }
     if (map['content'] == null) {
-      throw ArgumentError('Campo content é obrigatório');  
+      throw ArgumentError('Campo content é obrigatório');
     }
     if (map['createdAt'] == null) {
       throw ArgumentError('Campo createdAt é obrigatório');

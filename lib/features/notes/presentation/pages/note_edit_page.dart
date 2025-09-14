@@ -21,7 +21,9 @@ class _NoteEditPageState extends State<NoteEditPage> {
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.note?.title ?? "");
-    _contentController = TextEditingController(text: widget.note?.content ?? "");
+    _contentController = TextEditingController(
+      text: widget.note?.content ?? "",
+    );
   }
 
   Future<void> _saveNote() async {
@@ -44,8 +46,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
     }
 
     Navigator.pop(context, true);
-  } 
-
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,10 +62,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
                 Navigator.pop(context, true);
               },
             ),
-          IconButton(
-            icon: const Icon(Icons.check),
-            onPressed: _saveNote,
-          ),
+          IconButton(icon: const Icon(Icons.check), onPressed: _saveNote),
         ],
       ),
       body: Padding(

@@ -3,7 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Widget Tests', () {
-    testWidgets('Deve renderizar estrutura básica', (WidgetTester tester) async {
+    testWidgets('Deve renderizar estrutura básica', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -25,7 +27,7 @@ void main() {
 
     testWidgets('Deve simular navegação', (WidgetTester tester) async {
       bool fabPressed = false;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -54,10 +56,7 @@ void main() {
             appBar: AppBar(
               title: const Text('Nova Nota'),
               actions: [
-                IconButton(
-                  icon: const Icon(Icons.check),
-                  onPressed: () {},
-                ),
+                IconButton(icon: const Icon(Icons.check), onPressed: () {}),
               ],
             ),
             body: const Padding(

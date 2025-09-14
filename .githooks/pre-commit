@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Pre-commit hook para verificar formatação do código
+
+echo "� Verificando formatação do código Dart/Flutter..."
+
+# Executar dart format com --output=none --set-exit-if-changed
+# Isso verifica se o código precisa de formatação sem modificar os arquivos
+if ! dart format --output=none --set-exit-if-changed .; then
+    echo ""
+    echo "❌ COMMIT REJEITADO! Código não está formatado corretamente."
+    echo ""
+    echo "🔧 Para corrigir, execute:"
+    echo "   dart format ."
+    echo ""
+    echo "📝 Em seguida, adicione as mudanças e tente commitar novamente:"
+    echo "   git add ."
+    echo "   git commit"
+    echo ""
+    exit 1
+fi
+
+echo "✅ Código está formatado corretamente!"
+exit 0
