@@ -92,6 +92,8 @@ jobs:
             build/app/outputs/flutter-apk/app-release.apk
           draft: false
           prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-web:
     name: Build Web
