@@ -78,19 +78,23 @@ class _NoteMdxPageState extends State<NoteMdxPage> {
       });
 
       // Mostrar feedback que salvou
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Nota salva com sucesso!'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Nota salva com sucesso!'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
 
       // Marcar que houve modificação
       _hasBeenModified = true;
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Erro ao salvar nota: $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Erro ao salvar nota: $e')));
+      }
     }
   }
 
@@ -147,7 +151,7 @@ class _NoteMdxPageState extends State<NoteMdxPage> {
         _hasBeenModified = true;
       } catch (e) {
         // Em caso de erro, reverter a mudança
-        print('Erro ao salvar checkbox: $e');
+        debugPrint('Erro ao salvar checkbox: $e');
       }
     }
   }
@@ -156,12 +160,14 @@ class _NoteMdxPageState extends State<NoteMdxPage> {
     if (_currentNote != null && _currentNote!.id != null) {
       await repository.deleteNote(_currentNote!.id!);
       // Mostrar feedback que deletou
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Nota deletada!'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Nota deletada!'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     }
   }
 
@@ -181,11 +187,12 @@ class _NoteMdxPageState extends State<NoteMdxPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // Se houve modificações, retornar true para a tela anterior
-        Navigator.pop(context, _hasBeenModified);
-        return false; // Impede o pop automático
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          // Se houve modificações, retornar true para a tela anterior
+          Navigator.pop(context, _hasBeenModified);
+        }
       },
       child: Scaffold(
         appBar: AppBar(
