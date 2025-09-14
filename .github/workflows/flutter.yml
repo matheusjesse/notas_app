@@ -66,6 +66,26 @@ jobs:
         with:
           name: app-release.apk
           path: build/app/outputs/flutter-apk/app-release.apk
+          
+      - name: Create Release (only on main)
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
+          body: |
+            🚀 **Nova versão do Notas App**
+            
+            📱 **APK Android**: Baixe o arquivo `app-release.apk`
+            🌐 **Web Build**: Artifacts disponíveis
+            
+            **Mudanças**: Merge automático para main
+            **Build**: #${{ github.run_number }}
+            **Commit**: ${{ github.sha }}
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-web:
     name: Build Web
