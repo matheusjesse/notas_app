@@ -197,7 +197,7 @@ class _NoteMdxPageState extends State<NoteMdxPage> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false, // Impede o pop automático
-      onPopInvoked: (didPop) {
+      onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           // Sempre retornar o status de modificação
           Navigator.pop(context, _hasBeenModified);
