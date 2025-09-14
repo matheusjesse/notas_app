@@ -7,8 +7,9 @@ on:
     branches: [ "main", "dev" ]
 
 jobs:
-  test:
-    name: Run Tests
+  # Job obrigatório para verificação de código e testes
+  verify:
+    name: Code Verification & Tests
     runs-on: ubuntu-latest
     
     steps:
@@ -25,16 +26,22 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
         
-      - name: Run unit tests only
-        run: flutter test test/unit/
+      - name: Check code formatting
+        run: dart format --output=none --set-exit-if-changed .
         
-      - name: Run widget tests only
-        run: flutter test test/widget/
+      - name: Analyze code
+        run: flutter analyze
+        
+      - name: Run unit tests
+        run: flutter test test/unit/ --reporter=expanded
+        
+      - name: Run widget tests
+        run: flutter test test/widget/ --reporter=expanded
 
   build-android:
     name: Build Android APK
     runs-on: ubuntu-latest
-    needs: test
+    needs: verify
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
     
     steps:
@@ -63,7 +70,7 @@ jobs:
   build-web:
     name: Build Web
     runs-on: ubuntu-latest
-    needs: test
+    needs: verify
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
     
     steps:

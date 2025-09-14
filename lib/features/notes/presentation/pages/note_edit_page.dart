@@ -45,7 +45,9 @@ class _NoteEditPageState extends State<NoteEditPage> {
       await repository.updateNote(note);
     }
 
-    Navigator.pop(context, true);
+    if (mounted) {
+      Navigator.pop(context, true);
+    }
   }
 
   @override
@@ -59,7 +61,9 @@ class _NoteEditPageState extends State<NoteEditPage> {
               icon: const Icon(Icons.delete),
               onPressed: () async {
                 await repository.deleteNote(widget.note!.id!);
-                Navigator.pop(context, true);
+                if (context.mounted) {
+                  Navigator.pop(context, true);
+                }
               },
             ),
           IconButton(icon: const Icon(Icons.check), onPressed: _saveNote),
