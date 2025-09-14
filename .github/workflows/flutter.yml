@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ "main", "dev" ]
 
+# Permissões necessárias para o workflow
+permissions:
+  contents: write  # Para criar releases e tags
+  actions: read    # Para ler status de outros workflows
+  checks: read     # Para ler checks
+
 jobs:
   # Job obrigatório para verificação de código e testes
   verify:
@@ -69,7 +75,7 @@ jobs:
           
       - name: Create Release (only on main)
         if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.run_number }}
           name: Release v${{ github.run_number }}
@@ -84,6 +90,8 @@ jobs:
             **Commit**: ${{ github.sha }}
           files: |
             build/app/outputs/flutter-apk/app-release.apk
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
