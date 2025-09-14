@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ "main", "dev" ]
 
+# Permissões necessárias para o workflow
+permissions:
+  contents: write  # Para criar releases e tags
+  actions: read    # Para ler status de outros workflows
+  checks: read     # Para ler checks
+
 jobs:
   # Job obrigatório para verificação de código e testes
   verify:
@@ -66,6 +72,26 @@ jobs:
         with:
           name: app-release.apk
           path: build/app/outputs/flutter-apk/app-release.apk
+          
+      - name: Create Release (only on main)
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
+          body: |
+            🚀 **Nova versão do Notas App**
+            
+            📱 **APK Android**: Baixe o arquivo `app-release.apk`
+            🌐 **Web Build**: Artifacts disponíveis
+            
+            **Mudanças**: Merge automático para main
+            **Build**: #${{ github.run_number }}
+            **Commit**: ${{ github.sha }}
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
+          draft: false
+          prerelease: false
 
   build-web:
     name: Build Web
