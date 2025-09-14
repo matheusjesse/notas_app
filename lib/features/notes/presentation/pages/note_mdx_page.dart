@@ -67,6 +67,7 @@ class _NoteMdxPageState extends State<NoteMdxPage> {
           content: content,
           createdAt: note.createdAt,
         );
+        _hasBeenModified = true;
       } else {
         await repository.updateNote(note);
         // Atualizar a nota atual com os novos dados
@@ -159,14 +160,21 @@ class _NoteMdxPageState extends State<NoteMdxPage> {
   Future<void> _deleteNote() async {
     if (_currentNote != null && _currentNote!.id != null) {
       await repository.deleteNote(_currentNote!.id!);
-      // Mostrar feedback que deletou
+
+      _hasBeenModified = true;
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Nota deletada!'),
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 1),
           ),
         );
+
+        await Future.delayed(const Duration(milliseconds: 500));
+        if (mounted) {
+          Navigator.pop(context, true);
+        }
       }
     }
   }
@@ -188,15 +196,22 @@ class _NoteMdxPageState extends State<NoteMdxPage> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      onPopInvokedWithResult: (didPop, result) {
+      canPop: false, // Impede o pop automático
+      onPopInvoked: (didPop) {
         if (!didPop) {
-          // Se houve modificações, retornar true para a tela anterior
+          // Sempre retornar o status de modificação
           Navigator.pop(context, _hasBeenModified);
         }
       },
       child: Scaffold(
         appBar: AppBar(
           title: Text(_getCurrentTitle()),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context, _hasBeenModified);
+            },
+          ),
           actions: [
             if (!isEditing && _currentNote != null)
               IconButton(
