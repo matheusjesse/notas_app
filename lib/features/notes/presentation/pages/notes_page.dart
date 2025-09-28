@@ -45,12 +45,16 @@ class _NotesPageState extends State<NotesPage> {
     await repository.togglePinNote(note.id!, !note.isPinned);
     _loadNotes();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(note.isPinned ? 'Nota desfixada' : 'Nota fixada no topo'),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            note.isPinned ? 'Nota desfixada' : 'Nota fixada no topo',
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
   void _startSearch() {
