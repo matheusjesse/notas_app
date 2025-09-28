@@ -44,12 +44,10 @@ class _NotesPageState extends State<NotesPage> {
   Future<void> _togglePin(NoteModel note) async {
     await repository.togglePinNote(note.id!, !note.isPinned);
     _loadNotes();
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          note.isPinned ? 'Nota desfixada' : 'Nota fixada no topo',
-        ),
+        content: Text(note.isPinned ? 'Nota desfixada' : 'Nota fixada no topo'),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -100,8 +98,6 @@ class _NotesPageState extends State<NotesPage> {
           "${date.year}";
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +172,9 @@ class _NotesPageState extends State<NotesPage> {
                             ],
                             Expanded(
                               child: Text(
-                                note.title.isNotEmpty ? note.title : "Sem título",
+                                note.title.isNotEmpty
+                                    ? note.title
+                                    : "Sem título",
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -201,24 +199,29 @@ class _NotesPageState extends State<NotesPage> {
                                   _togglePin(note);
                                 }
                               },
-                              itemBuilder: (context) => [
-                                PopupMenuItem(
-                                  value: 'pin',
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        note.isPinned 
-                                            ? Icons.push_pin_outlined 
-                                            : Icons.push_pin,
-                                        size: 20,
-                                        color: Colors.grey.shade600,
+                              itemBuilder:
+                                  (context) => [
+                                    PopupMenuItem(
+                                      value: 'pin',
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            note.isPinned
+                                                ? Icons.push_pin_outlined
+                                                : Icons.push_pin,
+                                            size: 20,
+                                            color: Colors.grey.shade600,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            note.isPinned
+                                                ? 'Desafixar'
+                                                : 'Fixar',
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(width: 8),
-                                      Text(note.isPinned ? 'Desafixar' : 'Fixar'),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                                    ),
+                                  ],
                             ),
                           ],
                         ),

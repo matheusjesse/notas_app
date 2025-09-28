@@ -163,7 +163,7 @@ class _NoteMdxPageState extends State<NoteMdxPage> {
     if (_currentNote?.id == null) return;
 
     await repository.togglePinNote(_currentNote!.id!, !_currentNote!.isPinned);
-    
+
     setState(() {
       _currentNote = _currentNote!.copyWith(isPinned: !_currentNote!.isPinned);
     });
@@ -178,7 +178,7 @@ class _NoteMdxPageState extends State<NoteMdxPage> {
         ),
       );
     }
-    
+
     _hasBeenModified = true;
   }
 
@@ -241,10 +241,13 @@ class _NoteMdxPageState extends State<NoteMdxPage> {
             if (!isEditing && _currentNote != null) ...[
               IconButton(
                 icon: Icon(
-                  _currentNote!.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+                  _currentNote!.isPinned
+                      ? Icons.push_pin
+                      : Icons.push_pin_outlined,
                   color: _currentNote!.isPinned ? Colors.grey.shade600 : null,
                 ),
-                tooltip: _currentNote!.isPinned ? 'Desafixar nota' : 'Fixar no topo',
+                tooltip:
+                    _currentNote!.isPinned ? 'Desafixar nota' : 'Fixar no topo',
                 onPressed: _togglePin,
               ),
               IconButton(

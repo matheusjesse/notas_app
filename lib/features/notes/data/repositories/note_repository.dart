@@ -11,7 +11,10 @@ class NoteRepository {
 
   Future<List<NoteModel>> getNotes() async {
     final db = await _database.database;
-    final maps = await db.query('notes', orderBy: 'isPinned DESC, createdAt DESC');
+    final maps = await db.query(
+      'notes',
+      orderBy: 'isPinned DESC, createdAt DESC',
+    );
     return maps.map((map) => NoteModel.fromMap(map)).toList();
   }
 
