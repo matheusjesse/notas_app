@@ -55,6 +55,7 @@ class _NoteMdxPageState extends State<NoteMdxPage> {
       title: title,
       content: content, // Salvar o conteúdo completo
       createdAt: _currentNote?.createdAt ?? DateTime.now(),
+      isPinned: _currentNote?.isPinned ?? false,
     );
 
     try {
@@ -66,6 +67,7 @@ class _NoteMdxPageState extends State<NoteMdxPage> {
           title: title,
           content: content,
           createdAt: note.createdAt,
+          isPinned: note.isPinned,
         );
         _hasBeenModified = true;
       } else {
@@ -157,6 +159,29 @@ class _NoteMdxPageState extends State<NoteMdxPage> {
     }
   }
 
+  Future<void> _togglePin() async {
+    if (_currentNote?.id == null) return;
+
+    await repository.togglePinNote(_currentNote!.id!, !_currentNote!.isPinned);
+
+    setState(() {
+      _currentNote = _currentNote!.copyWith(isPinned: !_currentNote!.isPinned);
+    });
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            _currentNote!.isPinned ? 'Nota fixada no topo' : 'Nota desfixada',
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+
+    _hasBeenModified = true;
+  }
+
   Future<void> _deleteNote() async {
     if (_currentNote != null && _currentNote!.id != null) {
       await repository.deleteNote(_currentNote!.id!);
@@ -213,11 +238,23 @@ class _NoteMdxPageState extends State<NoteMdxPage> {
             },
           ),
           actions: [
-            if (!isEditing && _currentNote != null)
+            if (!isEditing && _currentNote != null) ...[
+              IconButton(
+                icon: Icon(
+                  _currentNote!.isPinned
+                      ? Icons.push_pin
+                      : Icons.push_pin_outlined,
+                  color: _currentNote!.isPinned ? Colors.grey.shade600 : null,
+                ),
+                tooltip:
+                    _currentNote!.isPinned ? 'Desafixar nota' : 'Fixar no topo',
+                onPressed: _togglePin,
+              ),
               IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: _deleteNote,
               ),
+            ],
             IconButton(
               icon: Icon(isEditing ? Icons.check : Icons.edit),
               onPressed: () async {

@@ -68,7 +68,8 @@ void main() {
         expect(map['title'], equals('Teste'));
         expect(map['content'], equals('Conteúdo'));
         expect(map['createdAt'], equals(testDateTime.toIso8601String()));
-        expect(map.keys.length, equals(4)); // Verifica se não há campos extras
+        expect(map['isPinned'], equals(0)); // false como 0
+        expect(map.keys.length, equals(5)); // Inclui isPinned agora
       });
 
       test('Deve converter NoteModel sem ID para Map corretamente', () {
@@ -87,6 +88,7 @@ void main() {
         expect(map['title'], equals('Sem ID'));
         expect(map['content'], equals('Conteúdo sem ID'));
         expect(map['createdAt'], equals(testDateTime.toIso8601String()));
+        expect(map['isPinned'], equals(0)); // false como 0
       });
     });
 
@@ -98,6 +100,7 @@ void main() {
           'title': 'Teste do Map',
           'content': 'Conteúdo do Map',
           'createdAt': testDateTime.toIso8601String(),
+          'isPinned': 0,
         };
 
         // Act
@@ -108,6 +111,7 @@ void main() {
         expect(note.title, equals('Teste do Map'));
         expect(note.content, equals('Conteúdo do Map'));
         expect(note.createdAt, equals(testDateTime));
+        expect(note.isPinned, equals(false));
       });
 
       test('Deve criar NoteModel sem ID a partir de Map', () {
@@ -116,6 +120,7 @@ void main() {
           'title': 'Sem ID',
           'content': 'Conteúdo sem ID',
           'createdAt': testDateTime.toIso8601String(),
+          'isPinned': 0,
         };
 
         // Act
@@ -126,6 +131,7 @@ void main() {
         expect(note.title, equals('Sem ID'));
         expect(note.content, equals('Conteúdo sem ID'));
         expect(note.createdAt, equals(testDateTime));
+        expect(note.isPinned, equals(false));
       });
 
       test('Deve lidar com Map contendo campos extras', () {
@@ -273,6 +279,7 @@ void main() {
           'title': 'Título Original',
           'content': 'Conteúdo Original',
           'createdAt': testDateTime.toIso8601String(),
+          'isPinned': 0,
         };
 
         // Act
@@ -289,6 +296,7 @@ void main() {
           'title': 'Título sem ID',
           'content': 'Conteúdo sem ID',
           'createdAt': testDateTime.toIso8601String(),
+          'isPinned': 0,
         };
 
         // Act
