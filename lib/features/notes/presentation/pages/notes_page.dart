@@ -41,6 +41,20 @@ class _NotesPageState extends State<NotesPage> {
     }
   }
 
+  Future<void> _togglePin(NoteModel note) async {
+    await repository.togglePinNote(note.id!, !note.isPinned);
+    _loadNotes();
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          note.isPinned ? 'Nota desfixada' : 'Nota fixada no topo',
+        ),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
   void _startSearch() {
     setState(() {
       isSearching = true;
@@ -86,6 +100,8 @@ class _NotesPageState extends State<NotesPage> {
           "${date.year}";
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -148,19 +164,63 @@ class _NotesPageState extends State<NotesPage> {
                             ),
                           ),
                         ),
-                        title: Text(
-                          note.title.isNotEmpty ? note.title : "Sem título",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
+                        title: Row(
+                          children: [
+                            if (note.isPinned) ...[
+                              Icon(
+                                Icons.push_pin,
+                                size: 16,
+                                color: Colors.grey.shade600,
+                              ),
+                              const SizedBox(width: 4),
+                            ],
+                            Expanded(
+                              child: Text(
+                                note.title.isNotEmpty ? note.title : "Sem título",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        trailing: Text(
-                          _formatDate(note.createdAt),
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.black54,
-                          ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              _formatDate(note.createdAt),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            PopupMenuButton<String>(
+                              onSelected: (value) {
+                                if (value == 'pin') {
+                                  _togglePin(note);
+                                }
+                              },
+                              itemBuilder: (context) => [
+                                PopupMenuItem(
+                                  value: 'pin',
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        note.isPinned 
+                                            ? Icons.push_pin_outlined 
+                                            : Icons.push_pin,
+                                        size: 20,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(note.isPinned ? 'Desafixar' : 'Fixar'),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                         onTap: () => _navigateToEdit(note: note),
                       ),

@@ -3,12 +3,14 @@ class NoteModel {
   final String title;
   final String content;
   final DateTime createdAt;
+  final bool isPinned;
 
   NoteModel({
     this.id,
     required this.title,
     required this.content,
     required this.createdAt,
+    this.isPinned = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -17,6 +19,7 @@ class NoteModel {
       'title': title,
       'content': content,
       'createdAt': createdAt.toIso8601String(),
+      'isPinned': isPinned ? 1 : 0,
     };
   }
 
@@ -37,6 +40,7 @@ class NoteModel {
       title: map['title'] as String,
       content: map['content'] as String,
       createdAt: DateTime.parse(map['createdAt'] as String),
+      isPinned: (map['isPinned'] as int?) == 1,
     );
   }
 
@@ -54,11 +58,12 @@ class NoteModel {
         other.id == id &&
         other.title == title &&
         other.content == content &&
-        other.createdAt == createdAt;
+        other.createdAt == createdAt &&
+        other.isPinned == isPinned;
   }
 
   @override
-  int get hashCode => Object.hash(id, title, content, createdAt);
+  int get hashCode => Object.hash(id, title, content, createdAt, isPinned);
 
   // Método para criar cópia com alterações
   NoteModel copyWith({
@@ -66,12 +71,14 @@ class NoteModel {
     String? title,
     String? content,
     DateTime? createdAt,
+    bool? isPinned,
   }) {
     return NoteModel(
       id: id ?? this.id,
       title: title ?? this.title,
       content: content ?? this.content,
       createdAt: createdAt ?? this.createdAt,
+      isPinned: isPinned ?? this.isPinned,
     );
   }
 }
